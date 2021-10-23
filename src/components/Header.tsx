@@ -17,7 +17,7 @@ export default function Header() {
       mt="4"
       px="6"
     >
-      <Text fontSize="3xl" fontWeight="bold" latterSpacing="tight" w="64">
+      <Text fontSize="3xl" fontWeight="bold" letterSpacing="tight" w="64">
         Dashgo
         <Text as="span" color="pink.500" ml="1">
           .
