@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import {
   Box,
   Flex,
@@ -12,6 +13,7 @@ import {
   Th,
   Td,
   Checkbox,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { RiAddLine, RiPencilLine, RiPercentLine } from "react-icons/ri";
 
@@ -20,6 +22,7 @@ import { Pagination } from "../../components/Pagination";
 import SideBar from "../../components/SideBar";
 
 export default function UserList() {
+  const isWideVersion = useBreakpointValue({ base: false, lg: true });
   return (
     <Box>
       <Header />
@@ -30,30 +33,32 @@ export default function UserList() {
             <Heading size="lg" fontWeight="normal">
               Usuários
             </Heading>
-            <Button
-              size="sm"
-              fontSize="sm"
-              colorScheme="pink"
-              as="a"
-              leftIcon={<Icon as={RiAddLine} />}
-            >
-              Criar novo
-            </Button>
+            <Link href="/users/create" passHref>
+              <Button
+                size="sm"
+                fontSize="sm"
+                colorScheme="pink"
+                as="a"
+                leftIcon={<Icon as={RiAddLine} />}
+              >
+                Criar novo
+              </Button>
+            </Link>
           </Flex>
           <Table colorScheme="whiteAlpha">
             <Thead>
               <Tr>
-                <Th px="6" color="gray.300" width="8">
+                <Th px={["4", "4", "6"]} color="gray.300" width="8">
                   <Checkbox colorScheme="pink" />
                 </Th>
                 <Th>Usuário</Th>
-                <Th>Data de cadastro</Th>
+                {isWideVersion && <Th>Data de cadastro</Th>}
                 <Th></Th>
               </Tr>
             </Thead>
             <Tbody>
               <Tr>
-                <Td px="6">
+                <Td px={["4", "4", "6"]}>
                   <Checkbox colorScheme="pink"></Checkbox>
                 </Td>
                 <Td>
@@ -64,7 +69,7 @@ export default function UserList() {
                     </Text>
                   </Box>
                 </Td>
-                <Td>24 de Novembro, 2021</Td>
+                {isWideVersion && <Td>24 de Novembro, 2021</Td>}
                 <Td textAlign="right">
                   <Button
                     as="a"
@@ -78,7 +83,7 @@ export default function UserList() {
                 </Td>
               </Tr>
               <Tr>
-                <Td px="6">
+                <Td px={["4", "4", "6"]}>
                   <Checkbox colorScheme="pink"></Checkbox>
                 </Td>
                 <Td>
@@ -89,7 +94,7 @@ export default function UserList() {
                     </Text>
                   </Box>
                 </Td>
-                <Td>24 de Novembro, 2021</Td>
+                {isWideVersion && <Td>24 de Novembro, 2021</Td>}
                 <Td textAlign="right">
                   <Button
                     as="a"
@@ -103,7 +108,7 @@ export default function UserList() {
                 </Td>
               </Tr>
               <Tr>
-                <Td px="6">
+                <Td px={["4", "4", "6"]}>
                   <Checkbox colorScheme="pink"></Checkbox>
                 </Td>
                 <Td>
@@ -114,7 +119,7 @@ export default function UserList() {
                     </Text>
                   </Box>
                 </Td>
-                <Td>24 de Novembro, 2021</Td>
+                {isWideVersion && <Td>24 de Novembro, 2021</Td>}
                 <Td textAlign="right">
                   <Button
                     as="a"
