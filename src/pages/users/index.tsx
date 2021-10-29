@@ -1,3 +1,4 @@
+import {useEffect} from "react"
 import Link from 'next/link'
 import {
   Box,
@@ -22,6 +23,11 @@ import { Pagination } from "../../components/Pagination";
 import SideBar from "../../components/SideBar";
 
 export default function UserList() {
+  useEffect(() => {
+    fetch('http://localhost:3000/api/users')
+    .then(response => response.json())
+    .then(data => console.log(data))
+  }, [])
   const isWideVersion = useBreakpointValue({ base: false, lg: true });
   return (
     <Box>
