@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import Link from "next/link";
 import {
   Box,
@@ -17,29 +16,15 @@ import {
   useBreakpointValue,
   Spinner,
 } from "@chakra-ui/react";
-import { RiAddLine, RiPencilLine, RiPercentLine } from "react-icons/ri";
-import { useQuery } from "react-query";
+import { RiAddLine, RiPencilLine } from "react-icons/ri";
 
 import Header from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import SideBar from "../../components/SideBar";
-import { api } from "../../service/api";
+import { useUsers } from "../../service/hooks/useUsers";
 
 export default function UserList() {
-  const { isLoading, error, data, isFetching } = useQuery("users", async () => {
-    const { data } = await api.get("users");
-    const users = data.users.map((user) => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: new Date(user.createdAt).toLocaleDateString("pt-BR", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }),
-    }));
-    return users;
-  });
+  const { isLoading, error, data, isFetching } = useUsers()
 
   const isWideVersion = useBreakpointValue({ base: false, lg: true });
   return (
@@ -51,7 +36,9 @@ export default function UserList() {
           <Flex justify="space-between" align="center" mb="8">
             <Heading size="lg" fontWeight="normal">
               Usuários
-              {!isLoading && isFetching && <Spinner size="sm" color="gray.500" ml="4" />}
+              {!isLoading && isFetching && (
+                <Spinner size="sm" color="gray.500" ml="4" />
+              )}
             </Heading>
             <Link href="/users/create" passHref>
               <Button
