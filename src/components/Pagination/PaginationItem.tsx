@@ -14,7 +14,7 @@ export function PaginationItem({
       <Button
         colorScheme="pink"
         size="sm"
-        width="4"
+        width="8"
         bg="gray.700"
         fontSize="xs"
         disabled
@@ -28,7 +28,7 @@ export function PaginationItem({
     <Button
       colorScheme="pink"
       size="sm"
-      width="4"
+      width="8"
       bg="gray.700"
       fontSize="xs"
       _hover={{ bg: "gray.500" }}

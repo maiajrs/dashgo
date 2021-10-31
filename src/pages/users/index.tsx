@@ -24,7 +24,7 @@ import SideBar from "../../components/SideBar";
 import { useUsers } from "../../service/hooks/useUsers";
 
 export default function UserList() {
-  const { isLoading, error, data, isFetching } = useUsers()
+  const { isLoading, error, data, isFetching } = useUsers();
 
   const isWideVersion = useBreakpointValue({ base: false, lg: true });
   return (
@@ -72,31 +72,6 @@ export default function UserList() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  <Tr>
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="pink"></Checkbox>
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">Júnior Maia</Text>
-                        <Text fontSize="sm" color="gray.300">
-                          junior_maiaf@gmail.com
-                        </Text>
-                      </Box>
-                    </Td>
-                    {isWideVersion && <Td>24 de Novembro, 2021</Td>}
-                    <Td textAlign="right">
-                      <Button
-                        as="a"
-                        fontSize="sm"
-                        size="sm"
-                        colorScheme="purple"
-                        leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                      >
-                        Editar
-                      </Button>
-                    </Td>
-                  </Tr>
                   {data.map((user) => (
                     <Tr key={user.id}>
                       <Td px={["4", "4", "6"]}>
@@ -126,7 +101,7 @@ export default function UserList() {
                   ))}
                 </Tbody>
               </Table>
-              <Pagination />
+              <Pagination currentPage={5} totalCountOfRegisters={20} />
             </>
           )}
         </Box>
