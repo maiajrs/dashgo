@@ -14,7 +14,7 @@ type getUserProps = {
 };
 
 export const getUsers = async (page: number): Promise<getUserProps> => {
-  const {data, headers} = await api.get("users", { params: { page } });
+  const { data, headers } = await api.get("users", { params: { page } });
   const { x_total_count } = headers;
 
   const users = data.users.map((user: User) => ({
@@ -35,6 +35,6 @@ export const getUsers = async (page: number): Promise<getUserProps> => {
 
 export function useUsers(page: number) {
   return useQuery(["users", page], () => getUsers(page), {
-    staleTime: 1000 * 5,
+    staleTime: 1000 * 60 * 10,
   });
 }
