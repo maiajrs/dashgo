@@ -5,7 +5,7 @@ interface PaginationProps {
   totalCountOfRegisters: number;
   registerPerPage?: number;
   currentPage: number;
-  onPageChange?: (page: number) => void;
+  onPageChange: (page: number) => void;
 }
 
 function generatePagesArray(from: number, to: number) {
@@ -24,7 +24,7 @@ export function Pagination({
   currentPage,
   onPageChange,
 }: PaginationProps) {
-  const lastPage = Math.ceil(totalCountOfRegisters / registerPerPage);
+  const lastPage = Math.floor(totalCountOfRegisters / registerPerPage);
 
   const previousPages =
     currentPage > 1
@@ -38,13 +38,6 @@ export function Pagination({
           Math.min(currentPage + siblingsCount, lastPage)
         )
       : [];
-  console.log(
-    previousPages,
-    nextPages,
-    currentPage,
-    lastPage,
-    currentPage - 1 - siblingsCount
-  );
 
   return (
     <Stack
@@ -64,8 +57,14 @@ export function Pagination({
       <Stack direction="row" spacing="2">
         {currentPage > 1 + siblingsCount && (
           <>
-            <PaginationItem page={Number(1)} />
-            <Flex as="p" width="8" color="gray.300" justify="center" align="end">
+            <PaginationItem onPageChange={onPageChange} page={Number(1)} />
+            <Flex
+              as="p"
+              width="8"
+              color="gray.300"
+              justify="center"
+              align="end"
+            >
               ...
             </Flex>
           </>
@@ -73,21 +72,42 @@ export function Pagination({
 
         {previousPages.length > 0 &&
           previousPages.map((page) => (
-            <PaginationItem key={page} page={Number(page)} />
+            <PaginationItem
+              onPageChange={onPageChange}
+              key={page}
+              page={Number(page)}
+            />
           ))}
-        <PaginationItem page={currentPage} isCurrent />
+        <PaginationItem
+          onPageChange={onPageChange}
+          page={currentPage}
+          isCurrent
+        />
         {nextPages.length > 0 &&
           nextPages.map((page) => (
-            <PaginationItem key={page} page={Number(page)} />
+            <PaginationItem
+              onPageChange={onPageChange}
+              key={page}
+              page={Number(page)}
+            />
           ))}
         {currentPage + siblingsCount < lastPage && (
           <>
             {currentPage + siblingsCount + 1 < lastPage && (
-              <Flex as="p" width="8" color="gray.300" justify="center" align="end">
+              <Flex
+                as="p"
+                width="8"
+                color="gray.300"
+                justify="center"
+                align="end"
+              >
                 ...
               </Flex>
             )}
-            <PaginationItem page={Number(lastPage)} />
+            <PaginationItem
+              onPageChange={onPageChange}
+              page={Number(lastPage)}
+            />
           </>
         )}
       </Stack>

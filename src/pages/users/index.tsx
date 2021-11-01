@@ -1,4 +1,5 @@
 import Link from "next/link";
+import React from "react";
 import {
   Box,
   Flex,
@@ -24,7 +25,8 @@ import SideBar from "../../components/SideBar";
 import { useUsers } from "../../service/hooks/useUsers";
 
 export default function UserList() {
-  const { isLoading, error, data, isFetching } = useUsers();
+  const [state, setState] = React.useState(1);
+  const { isLoading, error, data, isFetching } = useUsers(state);
 
   const isWideVersion = useBreakpointValue({ base: false, lg: true });
   return (
@@ -72,7 +74,7 @@ export default function UserList() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  {data.map((user) => (
+                  {data.users.map((user) => (
                     <Tr key={user.id}>
                       <Td px={["4", "4", "6"]}>
                         <Checkbox colorScheme="pink"></Checkbox>
@@ -101,7 +103,7 @@ export default function UserList() {
                   ))}
                 </Tbody>
               </Table>
-              <Pagination currentPage={5} totalCountOfRegisters={20} />
+              <Pagination registerPerPage={10} currentPage={state} totalCountOfRegisters={Number(data.x_total_count)} onPageChange={setState} />
             </>
           )}
         </Box>
