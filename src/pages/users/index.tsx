@@ -1,5 +1,5 @@
-import { useEffect } from "react";
-import Link from "next/link";
+import NextLink from "next/link";
+import React from "react";
 import {
   Box,
   Flex,
@@ -16,32 +16,33 @@ import {
   Checkbox,
   useBreakpointValue,
   Spinner,
+  Link,
 } from "@chakra-ui/react";
-import { RiAddLine, RiPencilLine, RiPercentLine } from "react-icons/ri";
-import { useQuery } from "react-query";
+import { RiAddLine, RiPencilLine } from "react-icons/ri";
 
 import Header from "../../components/Header";
 import { Pagination } from "../../components/Pagination";
 import SideBar from "../../components/SideBar";
+import { useUsers } from "../../service/hooks/useUsers";
+import { queryClient } from "../../service/queryClient";
 import { api } from "../../service/api";
 
 export default function UserList() {
-  const { isLoading, error, data, isFetching } = useQuery("users", async () => {
-    const { data } = await api.get("users");
-    const users = data.users.map((user) => ({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: new Date(user.createdAt).toLocaleDateString("pt-BR", {
-        day: "2-digit",
-        month: "long",
-        year: "numeric",
-      }),
-    }));
-    return users;
-  });
+  const [state, setState] = React.useState(1);
+  const { isLoading, error, data, isFetching } = useUsers(state);
 
   const isWideVersion = useBreakpointValue({ base: false, lg: true });
+
+  async function handlePrefetchUser(user_id: number) {
+    await queryClient.prefetchQuery(
+      ["user", user_id],
+      async () => {
+        const response = await api.get(`users/${user_id}`);
+        return response.data;
+      },
+      { staleTime: 1000 * 60 * 10 }
+    );
+  }
   return (
     <Box>
       <Header />
@@ -51,9 +52,11 @@ export default function UserList() {
           <Flex justify="space-between" align="center" mb="8">
             <Heading size="lg" fontWeight="normal">
               Usuários
-              {!isLoading && isFetching && <Spinner size="sm" color="gray.500" ml="4" />}
+              {!isLoading && isFetching && (
+                <Spinner size="sm" color="gray.500" ml="4" />
+              )}
             </Heading>
-            <Link href="/users/create" passHref>
+            <NextLink href="/users/create" passHref>
               <Button
                 size="sm"
                 fontSize="sm"
@@ -63,7 +66,7 @@ export default function UserList() {
               >
                 Criar novo
               </Button>
-            </Link>
+            </NextLink>
           </Flex>
           {isLoading ? (
             <Flex justify="center">
@@ -85,39 +88,19 @@ export default function UserList() {
                   </Tr>
                 </Thead>
                 <Tbody>
-                  <Tr>
-                    <Td px={["4", "4", "6"]}>
-                      <Checkbox colorScheme="pink"></Checkbox>
-                    </Td>
-                    <Td>
-                      <Box>
-                        <Text fontWeight="bold">Júnior Maia</Text>
-                        <Text fontSize="sm" color="gray.300">
-                          junior_maiaf@gmail.com
-                        </Text>
-                      </Box>
-                    </Td>
-                    {isWideVersion && <Td>24 de Novembro, 2021</Td>}
-                    <Td textAlign="right">
-                      <Button
-                        as="a"
-                        fontSize="sm"
-                        size="sm"
-                        colorScheme="purple"
-                        leftIcon={<Icon as={RiPencilLine} fontSize="16" />}
-                      >
-                        Editar
-                      </Button>
-                    </Td>
-                  </Tr>
-                  {data.map((user) => (
+                  {data.users.map((user) => (
                     <Tr key={user.id}>
                       <Td px={["4", "4", "6"]}>
                         <Checkbox colorScheme="pink"></Checkbox>
                       </Td>
                       <Td>
                         <Box>
-                          <Text fontWeight="bold">{user.name}</Text>
+                          <Link
+                            color="purple.700"
+                            onMouseEnter={() => handlePrefetchUser(Number(user.id))}
+                          >
+                            <Text fontWeight="bold">{user.name}</Text>
+                          </Link>
                           <Text fontSize="sm" color="gray.300">
                             {user.email}
                           </Text>
@@ -139,7 +122,12 @@ export default function UserList() {
                   ))}
                 </Tbody>
               </Table>
-              <Pagination />
+              <Pagination
+                registerPerPage={10}
+                currentPage={state}
+                totalCountOfRegisters={Number(data.x_total_count)}
+                onPageChange={setState}
+              />
             </>
           )}
         </Box>
