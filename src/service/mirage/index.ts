@@ -32,7 +32,7 @@ export function makeServer() {
           return faker.internet.email().toLowerCase();
         },
         createdAt() {
-          return faker.date.recent(10);
+          return faker.date.recent();
         },
       }),
     },
@@ -53,7 +53,14 @@ export function makeServer() {
         const pageEnd = pageStart + Number(per_page);
 
         const users = this.serialize(schema.all("user"))
-          .users.slice(pageStart, pageEnd);
+          .users.sort(
+            (a, b) =>
+              new Date(b.created_at).getTime() -
+              new Date(a.created_at).getTime()
+          )
+          .slice(pageStart, pageEnd);
+
+        console.log(users);
 
         return new Response(200, { x_total_count: String(total) }, { users });
       });
