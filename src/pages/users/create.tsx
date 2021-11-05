@@ -18,6 +18,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "react-query";
+import { api } from "../../service/api";
+import { queryClient } from "../../service/queryClient";
+import { useRouter } from "next/router";
 
 type CreateUserFormData = {
   name: string;
@@ -32,11 +36,34 @@ const createFormSchema = yup.object().shape({
     .string()
     .required("O campo e-mail é obrigatório")
     .email("O formato de e-mail não está válido"),
-  password: yup.string().required("O campo senha é obrigatório").min(6, "A senha precisa ter no mínimo 6 caracteres"),
-  password_confirmation: yup.string().oneOf([null, yup.ref("password")], "As senhas precisam ser iguais")
+  password: yup
+    .string()
+    .required("O campo senha é obrigatório")
+    .min(6, "A senha precisa ter no mínimo 6 caracteres"),
+  password_confirmation: yup
+    .string()
+    .oneOf([null, yup.ref("password")], "As senhas precisam ser iguais"),
 });
 
 export default function UserList() {
+  const router = useRouter()
+  const createUser = useMutation(
+    async (user: CreateUserFormData) => {
+      const response = await api.post("users", {
+        user: {
+          ...user,
+          created_at: new Date(),
+        },
+      });
+      return response.data.user;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries("users");
+      },
+    }
+  );
+
   const { handleSubmit, register, formState } = useForm({
     resolver: yupResolver(createFormSchema),
   });
@@ -44,8 +71,9 @@ export default function UserList() {
   const handleCreateUser: SubmitHandler<CreateUserFormData> = async (
     values
   ) => {
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log(values);
+    await createUser.mutateAsync(values);
+
+    router.push("/users")
   };
   return (
     <Box>
